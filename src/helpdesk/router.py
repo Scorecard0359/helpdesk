@@ -5,7 +5,3 @@ blueprint = Blueprint("router", __name__, static_folder='static')
 @blueprint.route("/")
 def page_index():
     return render_template("index.html")
-
-@blueprint.route("/test")
-def page_test():
-    return render_template("index.html")
