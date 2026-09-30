@@ -1,11 +1,15 @@
 from flask import Flask, render_template
 
-from helpdesk.router import blueprint as bp
+from helpdesk import db
+from helpdesk.blueprints import misc, auth
 
-app = Flask(__name__)
-app.config.from_mapping(SECRET_KEY="temp")
-app.register_blueprint(bp)
+def create_app():
+    app = Flask(__name__)
+    app.config.from_mapping(SECRET_KEY="dev")
 
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html')
+    app.register_blueprint(misc.bp)
+    app.register_blueprint(auth.bp)
+
+    #db.init_db()
+
+    return app
