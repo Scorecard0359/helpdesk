@@ -22,6 +22,7 @@ class User(db.Model):
     group_id: Mapped[int] = mapped_column(Integer, ForeignKey("groups.id"), nullable=False, default=0)
     is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
     registered_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
+    invite_code: Mapped[str] = mapped_column(String(16), ForeignKey("invite_codes.code"), unique=True, nullable=True)
 
 class Ticket(db.Model):
     __tablename__ = "tickets"
@@ -59,3 +60,9 @@ class PublishMethod(db.Model):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(100), nullable=False)
+
+class InviteCode(db.Model):
+    __tablename__ = "invite_codes"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    code: Mapped[str] = mapped_column(String(16), nullable=False)
