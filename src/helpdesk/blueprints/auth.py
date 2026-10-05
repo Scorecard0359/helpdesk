@@ -1,7 +1,7 @@
 from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from helpdesk.db import get_db
+from helpdesk import db
 
 bp = Blueprint("auth", __name__, static_folder='static', url_prefix='/auth')
 
@@ -12,25 +12,20 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = get_db().execute(
-            'SELECT * FROM user WHERE id = ?', (user_id,)
-        ).fetchone()
+        g.user = db.session_execute(db.select(User).where(User.id == user_id))
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        db = get_db()
         error = None
-        user = db.execute(
-            'SELECT * FROM user WHERE username = ?', (username,)
-        ).fetchone()
+        user = db.session_execute(db.select(User).where(User.username == username))
 
         if user is None:
-            error = 'Incorrect username.'
+            error = 'Неверное имя пользователя.'
         elif not check_password_hash(user['password'], password):
-            error = 'Incorrect password.'
+            error = 'Неверный пароль.'
 
         if error is None:
             session.clear()
@@ -46,23 +41,27 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        db = get_db()
         error = None
 
         if not username:
-            error = 'Username is required.'
+            error = 'Требуется ввести имя пользователя.'
         elif not password:
-            error = 'Password is required.'
+            error = 'Требуется ввести пароль.'
 
         if error is None:
             try:
-                db.execute(
-                    "INSERT INTO user (username, password) VALUES (?, ?)",
-                    (username, generate_password_hash(password)),
+                # db.execute(
+                #     "INSERT INTO user (username, password) VALUES (?, ?)",
+                #     (username, generate_password_hash(password)),
+                # )
+                user = User(
+                    username=username,
+                    password=generate_password_hash(password)
                 )
-                db.commit()
+                db.session.add(user)
+                db.session.commit()
             except db.IntegrityError:
-                error = f"User {username} is already registered."
+                error = f"Пользователь {username} уже существует."
             else:
                 return redirect(url_for("auth.login"))
 
