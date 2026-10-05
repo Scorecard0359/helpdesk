@@ -12,7 +12,7 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = db.session_execute(db.select(User).where(User.id == user_id))
+        g.user = db.session.execute(db.select(User).where(User.id == user_id))
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
@@ -20,7 +20,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
         error = None
-        user = db.session_execute(db.select(User).where(User.username == username))
+        user = db.session.execute(db.select(User).where(User.username == username))
 
         if user is None:
             error = 'Неверное имя пользователя.'
