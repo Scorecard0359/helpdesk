@@ -1,8 +1,9 @@
-import click, os
+import click
 from flask import Flask
 from werkzeug.security import generate_password_hash
 
-from helpdesk.db import db, User
+from helpdesk.db import db
+from helpdesk.models import User
 from helpdesk.blueprints import misc, auth
 
 def create_app():
@@ -25,10 +26,9 @@ def create_app():
     @click.argument('password', help="Пароль", required=True)
     @click.argument('is_admin', default=0)
     def add_superuser(username: str, password: str, is_admin: int):
-        if is_admin < 0 or is_admin > 1:
+        if is_admin > 1:
             print("Неверное значение is_admin.")
-            os.sys.exit(1)
-        if db.session.execute(db.select(User).where(User.username == username)).fetchone() is not None:
+        elif db.session.execute(db.select(User).where(User.username == username)).fetchone() is not None:
             print(f"Пользователь {username} уже существует.")
         else:
             user = User(
