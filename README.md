@@ -32,4 +32,5 @@ uv run flask --app helpdesk run
 ```bash
 # uv run flask --app helpdesk add-user [username] [password] (is_admin:int)
 uv run flask --app helpdesk add-user admin verysecurepassword 1
+uv run flask --app helpdesk add-user bob bobertovisch # is_admin необязателен
 ```
