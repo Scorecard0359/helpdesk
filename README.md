@@ -24,3 +24,12 @@ uv sync
 ```bash
 uv run flask --app helpdesk run
 ```
+
+## Опции CLI
+
+- Создание (супер)пользователя
+
+```bash
+# uv run flask --app helpdesk add-user [username] [password] (is_admin:int)
+uv run flask --app helpdesk add-user admin verysecurepassword 1
+```
