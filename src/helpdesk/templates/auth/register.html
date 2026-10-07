@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация - Helpdesk</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+</head>
+<body>
+    <div class="content">
+        <div class="title">Регистрация</div>
+        <div class="container">
+            <form method="post">
+                <ul>
+                    <li>
+                        <label for="username">Имя пользователя:</label>
+                        <input type="text" id="username" required>
+                    </li>
+                    <li>
+                        <label for="password">Пароль:</label>
+                        <input type="password" id="password" required>
+                    </li>
+                    <li>
+                        <label for="repeat_password">Повторите пароль:</label>
+                        <input type="password" id="repeat_password" required>
+                    </li>
+                    <li>
+                        <label for="full_name">Полное имя (необязательно):</label>
+                        <input type="text" id="full_name">
+                    </li>
+                    {% if config['INVITE_ONLY'] %}
+                        <li>
+                            <label for="invite_code">Код приглашения:</label>
+                            <input type="text" id="invite_code" required>
+                        </li>
+                    {% endif %}
+                    <input type="submit" value="Зарегистрироваться">
+                </ul>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

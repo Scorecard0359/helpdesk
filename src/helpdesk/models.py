@@ -9,12 +9,13 @@ class User(db.Model):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     username: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
-    password: Mapped[str] = mapped_column(String(100), nullable=False)
+    password: Mapped[str] = mapped_column(String, nullable=False)
     full_name: Mapped[str] = mapped_column(String(100), nullable=True)
     status: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     group_id: Mapped[int] = mapped_column(Integer, ForeignKey("groups.id"), nullable=False, default=0)
     is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
     registered_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
+    avatar_key: Mapped[str] = mapped_column(String(16), ForeignKey("media_files.key"), unique=True, nullable=False)
     invite_code: Mapped[str] = mapped_column(String(16), ForeignKey("invite_codes.code"), unique=True, nullable=True)
 
 class Ticket(db.Model):
@@ -59,3 +60,10 @@ class InviteCode(db.Model):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     code: Mapped[str] = mapped_column(String(16), nullable=False)
+
+class MediaFile(db.Model):
+    __tablename__ = "media_files"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    key: Mapped[str] = mapped_column(String(16), unique=True, nullable=False)
+    url: Mapped[str] = mapped_column(String, nullable=False)

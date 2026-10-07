@@ -11,10 +11,11 @@ def create_app():
     app.config.from_mapping(
         SECRET_KEY="dev",
         SQLALCHEMY_DATABASE_URI="sqlite:///helpdesk.db",
+        INVITE_ONLY=False,
     )
 
-    app.register_blueprint(misc.bp)
     app.register_blueprint(auth.bp)
+    app.register_blueprint(misc.bp)
 
     db.init_app(app)
 

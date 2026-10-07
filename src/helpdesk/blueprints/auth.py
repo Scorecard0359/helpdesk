@@ -2,7 +2,7 @@ from flask import Blueprint, flash, g, redirect, render_template, request, sessi
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from helpdesk.db import db
-from helpdesk.models import User
+from helpdesk.models import User, InviteCode
 
 bp = Blueprint("auth", __name__, static_folder='static', url_prefix='/auth')
 
@@ -42,25 +42,40 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        repeat_password = request.form['repeat_password']
+        full_name = request.form['full_name']
+        invite_code = request.form['invite_code']
         error = None
 
         if not username:
             error = 'Требуется ввести имя пользователя.'
         elif not password:
             error = 'Требуется ввести пароль.'
+        elif not repeat_password:
+            error = 'Повторите пароль.'
+        elif not invite_code and Flask.config['INVITE_ONLY']:
+            error = 'Введите код регистрации.'
+        elif password != repeat_password:
+            error = 'Пароль не совпадает.'
 
         if error is None:
-            try:
-                user = User(
-                    username=username,
-                    password=generate_password_hash(password)
-                )
-                db.session.add(user)
-                db.session.commit()
-            except db.IntegrityError:
-                error = f"Пользователь {username} уже существует."
+            if Flask.config['INVITE_ONLY'] and db.session.execute(db.select(InviteCode).where(InviteCode.code == invite_code)).fetchone() is None:
+                error = 'Данный код не существует.'
             else:
-                return redirect(url_for("auth.login"))
+                try:
+                    password = generate_password_hash(password)
+                    user = User(
+                        username=username,
+                        password=password,
+                        full_name=full_name,
+                        invite_code=invite_code
+                    )
+                    db.session.add(user)
+                    db.session.commit()
+                except db.IntegrityError:
+                    error = f"Пользователь {username} уже существует."
+                else:
+                    return redirect(url_for("auth.login"))
 
         flash(error)
 
@@ -70,6 +85,13 @@ def register():
 def logout():
     session.clear()
     return redirect(url_for('auth.login'))
+
+@bp.route('/')
+def index():
+    if g.user is None:
+        return redirect(url_for('auth.login'))
+    else:
+        return redirect(url_for('misc.index'))
 
 def login_required(view):
     @functools.wraps(view)
