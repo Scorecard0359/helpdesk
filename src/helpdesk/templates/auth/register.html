@@ -1,43 +1,41 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="page-auth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Регистрация - Helpdesk</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
 </head>
-<body>
-    <div class="content">
-        <div class="title">Регистрация</div>
-        <div class="container">
-            <form method="post">
-                <ul>
-                    <li>
-                        <label for="username">Имя пользователя:</label>
-                        <input type="text" id="username" required>
-                    </li>
-                    <li>
-                        <label for="password">Пароль:</label>
-                        <input type="password" id="password" required>
-                    </li>
-                    <li>
-                        <label for="repeat_password">Повторите пароль:</label>
-                        <input type="password" id="repeat_password" required>
-                    </li>
-                    <li>
-                        <label for="full_name">Полное имя (необязательно):</label>
-                        <input type="text" id="full_name">
-                    </li>
-                    {% if config['INVITE_ONLY'] %}
-                        <li>
-                            <label for="invite_code">Код приглашения:</label>
-                            <input type="text" id="invite_code" required>
-                        </li>
-                    {% endif %}
-                    <input type="submit" value="Зарегистрироваться">
-                </ul>
-            </form>
-        </div>
-    </div>
+<body class="d-flex align-items-center py-4 bg-body-tertiary page-auth">
+    <main class="form-auth w-100 m-auto">
+        <h3 class="mb-3 fw-normal">Регистрация</h3>
+        <form method="post">
+            <div class="form-floating">
+                <input type="text" class="form-control first" placeholder=" " id="username" required>
+                <label for="username" class="form-label">Имя пользователя</label>
+            </div>
+            <div class="form-floating">
+                <input type="password" class="form-control" placeholder=" " id="password" required>
+                <label for="password" class="form-label">Пароль</label>
+            </div>
+            <div class="form-floating">
+                <input type="password" class="form-control" placeholder=" " id="repeat_password" required>
+                <label for="repeat_password" class="form-label">Повторите пароль</label>
+            </div>
+            <div class="form-floating">
+                <input type="text" class="form-control{% if not config['INVITE_ONLY'] %} last{% endif %}" placeholder=" " id="full_name">
+                <label for="full_name" class="form-label">Полное имя (необязательно)</label>
+            </div>
+            {% if config['INVITE_ONLY'] %}
+                <div class="form-floating">
+                    <input type="text" class="form-control last" placeholder=" " id="invite_code" required>
+                    <label for="invite_code" class="form-label">Код приглашения</label>
+                </div>
+            {% endif %}
+            <input type="submit" class="btn btn-primary w-100 mt-4 py-2" value="Зарегистрироваться">
+            <a href="/auth/login" class="btn btn-light w-100 my-2 py-2 text-muted">Есть аккаунт?</a>
+        </form>
+    </main>
 </body>
 </html>
