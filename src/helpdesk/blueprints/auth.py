@@ -55,6 +55,8 @@ def register():
             error = 'Повторите пароль.'
         elif not invite_code and Flask.config['INVITE_ONLY']:
             error = 'Введите код регистрации.'
+        elif invite_code and not Flask.config['INVITE_ONLY']:
+            invite_code = None
         elif password != repeat_password:
             error = 'Пароль не совпадает.'
 
