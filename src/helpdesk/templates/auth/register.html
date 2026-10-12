@@ -10,6 +10,11 @@
 <body class="d-flex align-items-center py-4 bg-body-tertiary page-auth">
     <main class="form-auth w-100 m-auto">
         <h3 class="mb-3 fw-normal">Регистрация</h3>
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
         <form method="post">
             <div class="form-floating">
                 <input type="text" class="form-control first" placeholder=" " id="username" required>

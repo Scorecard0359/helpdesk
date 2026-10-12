@@ -17,10 +17,11 @@ def load_logged_in_user():
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
+    error = None
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        error = None
         user = db.session.execute(db.select(User).where(User.username == username))
 
         if user is None:
@@ -33,19 +34,18 @@ def login():
             session['user_id'] = user['id']
             return redirect(url_for('index'))
 
-        flash(error)
-
-    return render_template('auth/login.html')
+    return render_template('auth/login.html', error=error)
 
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
+    error = None
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         repeat_password = request.form['repeat_password']
         full_name = request.form['full_name']
         invite_code = request.form['invite_code']
-        error = None
 
         if not username:
             error = 'Требуется ввести имя пользователя.'
@@ -79,9 +79,7 @@ def register():
                 else:
                     return redirect(url_for("auth.login"))
 
-        flash(error)
-
-    return render_template('auth/register.html')
+    return render_template('auth/register.html', error=error)
 
 @bp.route('/logout')
 def logout():
