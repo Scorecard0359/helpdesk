@@ -44,8 +44,8 @@ def register():
         username = request.form['username'].strip().lower()
         password = request.form['password']
         repeat_password = request.form['repeat_password']
-        full_name = request.form['full_name']
-        invite_code = request.form['invite_code']
+        full_name = request.form['full_name'].strip()
+        invite_code = request.form['invite_code'].strip().lower()
 
         if not username:
             error = 'Требуется ввести имя пользователя.'
