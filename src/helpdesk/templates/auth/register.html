@@ -17,26 +17,28 @@
         {% endif %}
         <form method="post">
             <div class="form-floating">
-                <input type="text" class="form-control first" placeholder=" " id="username" required>
+                <input type="text" class="form-control first" placeholder=" " name="username" id="username" required>
                 <label for="username" class="form-label">Имя пользователя</label>
             </div>
             <div class="form-floating">
-                <input type="password" class="form-control" placeholder=" " id="password" required>
+                <input type="password" class="form-control" placeholder=" " name="password" id="password" required>
                 <label for="password" class="form-label">Пароль</label>
             </div>
             <div class="form-floating">
-                <input type="password" class="form-control" placeholder=" " id="repeat_password" required>
+                <input type="password" class="form-control" placeholder=" " name="repeat_password" id="repeat_password" required>
                 <label for="repeat_password" class="form-label">Повторите пароль</label>
             </div>
             <div class="form-floating">
-                <input type="text" class="form-control{% if not config['INVITE_ONLY'] %} last{% endif %}" placeholder=" " id="full_name">
+                <input type="text" class="form-control{% if not config['INVITE_ONLY'] %} last{% endif %}" placeholder=" " name="full_name" id="full_name">
                 <label for="full_name" class="form-label">Полное имя (необязательно)</label>
             </div>
             {% if config['INVITE_ONLY'] %}
                 <div class="form-floating">
-                    <input type="text" class="form-control last" placeholder=" " id="invite_code" required>
+                    <input type="text" class="form-control last" placeholder=" " name="invite_code" id="invite_code" required>
                     <label for="invite_code" class="form-label">Код приглашения</label>
                 </div>
+            {% else %}
+                <input type="hidden" name="invite_code" value=" ">
             {% endif %}
             <input type="submit" class="btn btn-primary w-100 mt-4 py-2" value="Зарегистрироваться">
             <a href="/auth/login" class="btn btn-light w-100 my-2 py-2 text-muted">Есть аккаунт?</a>

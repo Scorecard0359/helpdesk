@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for
+from flask import Blueprint, current_app, g, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from helpdesk.db import db
@@ -22,17 +22,17 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        user = db.session.execute(db.select(User).where(User.username == username))
+        user = db.session.execute(db.select(User).where(User.username == username)).scalar_one_or_none()
 
         if user is None:
             error = 'Неверное имя пользователя.'
-        elif not check_password_hash(user['password'], password):
+        elif not check_password_hash(user.password, password):
             error = 'Неверный пароль.'
 
         if error is None:
             session.clear()
-            session['user_id'] = user['id']
-            return redirect(url_for('index'))
+            session['user_id'] = user.id
+            return redirect(url_for('misc.index'))
 
     return render_template('auth/login.html', error=error)
 
@@ -53,15 +53,15 @@ def register():
             error = 'Требуется ввести пароль.'
         elif not repeat_password:
             error = 'Повторите пароль.'
-        elif not invite_code and Flask.config['INVITE_ONLY']:
+        elif not invite_code and current_app.config['INVITE_ONLY']:
             error = 'Введите код регистрации.'
-        elif invite_code and not Flask.config['INVITE_ONLY']:
+        elif invite_code and not current_app.config['INVITE_ONLY']:
             invite_code = None
         elif password != repeat_password:
             error = 'Пароль не совпадает.'
 
         if error is None:
-            if Flask.config['INVITE_ONLY'] and db.session.execute(db.select(InviteCode).where(InviteCode.code == invite_code)).fetchone() is None:
+            if current_app.config['INVITE_ONLY'] and db.session.execute(db.select(InviteCode).where(InviteCode.code == invite_code)).fetchone() is None:
                 error = 'Данный код не существует.'
             else:
                 try:
