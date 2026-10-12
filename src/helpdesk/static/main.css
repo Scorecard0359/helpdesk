@@ -23,3 +23,8 @@
 .form-auth input.last {
     border-bottom-left-radius: 6px;border-bottom-right-radius: 6px;
 }
+
+.input-group-text#username-addon {
+    border-bottom-left-radius: 0;
+    margin-bottom: -1px;
+}

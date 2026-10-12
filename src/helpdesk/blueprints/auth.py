@@ -20,7 +20,7 @@ def login():
     error = None
 
     if request.method == 'POST':
-        username = request.form['username']
+        username = request.form['username'].strip().lower()
         password = request.form['password']
         user = db.session.execute(db.select(User).where(User.username == username)).scalar_one_or_none()
 
@@ -41,7 +41,7 @@ def register():
     error = None
 
     if request.method == 'POST':
-        username = request.form['username']
+        username = request.form['username'].strip().lower()
         password = request.form['password']
         repeat_password = request.form['repeat_password']
         full_name = request.form['full_name']

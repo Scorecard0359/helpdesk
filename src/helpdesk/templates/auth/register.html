@@ -16,9 +16,12 @@
             </div>
         {% endif %}
         <form method="post">
-            <div class="form-floating">
-                <input type="text" class="form-control first" placeholder=" " name="username" id="username" required>
-                <label for="username" class="form-label">Имя пользователя</label>
+            <div class="input-group">
+                <span class="input-group-text" id="username-addon">@</span>
+                <div class="form-floating">
+                    <input type="text" class="form-control first" placeholder=" " name="username" id="username" required>
+                    <label for="username" class="form-label">Имя пользователя</label>
+                </div>
             </div>
             <div class="form-floating">
                 <input type="password" class="form-control" placeholder=" " name="password" id="password" required>
@@ -41,7 +44,7 @@
                 <input type="hidden" name="invite_code" value=" ">
             {% endif %}
             <input type="submit" class="btn btn-primary w-100 mt-4 py-2" value="Зарегистрироваться">
-            <a href="/auth/login" class="btn btn-light w-100 my-2 py-2 text-muted">Есть аккаунт?</a>
+            <a href="/auth/login" class="btn btn-light w-100 my-2 py-2 text-light-emphasis">Есть аккаунт?</a>
         </form>
     </main>
 </body>
