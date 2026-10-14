@@ -1,0 +1,39 @@
+{% extends 'baseof.html' %}
+
+{% block title %}Заявки{% endblock %}
+
+{% block content %}
+    <main class="w-100 overflow-auto">
+        <div class="table-responsive small w-100 h-100 p-3">
+            <div class="mb-3">
+                <a href="{{ url_for('tickets.add') }}" class="btn btn-primary btn-sm">Создать заявку</a>
+            </div>
+            <table class="table table-striped-columns table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">№</th>
+                        <th scope="col">Тема</th>
+                        <th scope="col">Ответственный</th>
+                        <th scope="col">Клиент</th>
+                        <th scope="col">Приоритет</th>
+                        <th scope="col">Способ регистрации</th>
+                        <th scope="col">Статус</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ticket in tickets %}
+                    <tr>
+                        <td scope="row">{{ ticket.id }}</td>
+                        <td><a href="{{ url_for('tickets.show', id=ticket.id) }}">{{ ticket.title }}</a></td>
+                        <td>{{ ticket.username }}</td>
+                        <td>{{ ticket.client_name }}</td>
+                        <td>{% if ticket.priority == 0 %}Низкий{% elif ticket.priority == 1 %}Средний{% elif ticket.priority == 2 %}Высокий{% endif %}</td>
+                        <td>{% if ticket.sent_via == 0 %}Неопределено{% elif ticket.sent_via == 1 %}Диспетчер{% elif ticket.sent_via == 2 %}Электронная почта{% elif ticket.sent_via == 3 %}Мобильный контакт{% elif ticket.sent_via == 4 %}Telegram{% endif %}</td>
+                        <td>{% if ticket.status == 0 %}Открыто{% elif ticket.status == 1 %}Решено{% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+{% endblock content %}

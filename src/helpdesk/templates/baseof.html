@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru" class="h-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} - Helpdesk</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+</head>
+<body class="d-flex align-content-center h-100">
+    <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark">
+        <a href="/" class="text-white text-decoration-none"><h3 class="mb-0 fw-normal">Helpdesk</h3></a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item"><a href="{{ url_for('tickets.list') }}" class="nav-link {% if "/tickets/" in request.path %}active{% else %}text-light{% endif %}">Заявки</a></li>
+            <li class="nav-item"><a href="{{ url_for('clients.list') }}" class="nav-link {% if "/clients/" in request.path %}active{% else %}text-light{% endif %}">Клиенты</a></li>
+            <li class="nav-item"><a href="{{ url_for('users.list') }}" class="nav-link {% if "/users/" in request.path %}active{% else %}text-light{% endif %}">Сотрудники</a></li>
+        </ul>
+        <hr>
+        <div class="dropdown d-flex align-items-center text-white justify-content-between">
+            <span class="overflow-x-hidden navbar-username" title="@{{ g.user.username }}{% if g.user.full_name %} ({{ g.user.full_name }}){% endif %}">@{{ g.user.username }}</span>
+            <a href="{{ url_for('auth.logout') }}" class="btn btn-primary btn-sm" title="Выйти">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+                    <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+    {% block content %}{% endblock %}
+    <script src="{{ url_for('static', filename='bootstrap.bundle.min.js') }}"></script>
+</body>
+</html>

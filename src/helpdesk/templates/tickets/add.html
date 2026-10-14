@@ -1,0 +1,48 @@
+{% extends 'baseof.html' %}
+
+{% block title %}Новая заявка{% endblock %}
+
+{% block content %}
+    <main class="w-100">
+        <div class="container m-auto">
+            <h3 class="fw-normal my-3">Новая заявка</h3>
+            <form method="post">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Название</label>
+                    <input type="text" class="form-control" id="title" name="title" required>
+                </div>
+                <div class="mb-3">
+                    <label for="client" class="form-label">Клиент</label>
+                    <select name="client" id="client" class="form-select">
+                        <option selected>-</option>
+                        {% for client in clients %}
+                            <option value="{{ client.id }}">{{ client.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="assignee" class="form-label">Ответственный</label>
+                    <select name="assignee" id="assignee" class="form-select">
+                        {% for user in users %}
+                            <option value="{{ user.id }}"{% if user.id == g.user.id %} selected{% endif %}>@{{ user.username }}{% if user.full_name %} ({{ user.full_name }}){% endif %}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="publish_method" class="form-label">Способ регистрации</label>
+                    <select name="publish_method" id="publish_method" class="form-select">
+                        <option value="0" selected>Неопределено</option>
+                        <option value="1">Диспетчер</option>
+                        <option value="2">Электронная почта</option>
+                        <option value="3">Мобильный контакт</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="body" class="form-label">Описание</label>
+                    <textarea name="body" id="body" class="form-control" placeholder="Не менее 100 символов." required minlength="100"></textarea>
+                </div>
+                <input type="submit" value="Отправить" class="btn btn-primary">
+            </form>
+        </div>
+    </main>
+{% endblock %}

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru" class="page-auth">
+<html lang="ru" class="h-100">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
 </head>
-<body class="d-flex align-items-center py-4 bg-body-tertiary page-auth">
+<body class="d-flex align-items-center py-4 bg-body-tertiary h-100">
     <main class="form-auth w-100 m-auto">
         <h3 class="mb-3 fw-normal">Регистрация</h3>
         {% if error %}
@@ -44,7 +44,7 @@
                 <input type="hidden" name="invite_code" value=" ">
             {% endif %}
             <input type="submit" class="btn btn-primary w-100 mt-4 py-2" value="Зарегистрироваться">
-            <a href="/auth/login" class="btn btn-light w-100 my-2 py-2 text-light-emphasis">Есть аккаунт?</a>
+            <a href="/auth/login" class="btn btn-outline-secondary w-100 my-2 py-2">Есть аккаунт?</a>
         </form>
     </main>
 </body>

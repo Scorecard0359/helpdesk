@@ -1,0 +1,120 @@
+{% extends 'baseof.html' %}
+
+{% block content %}
+    <main class="w-100 d-flex p-3 overflow-auto">
+        <div class="container-sm w-100">
+            <h2 class="fw-normal mb-3">{% block title %}{{ ticket.title }}{% endblock %}</h2>
+            <div class="card">
+                <div class="card-header">
+                    <b>{{ ticket.client_name }}</b> отправили заявку {{ ticket.created_at }}
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        {{ ticket.body }}
+                    </p>
+                </div>
+            </div>
+            {% for comment in comments %}
+                <div class="timeline-box">
+                    <div class="timeline-line"></div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <b>@{{ comment.username }}</b> * {{ comment.create_at }}
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            {{ comment.body }}
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="mt-5">
+                <textarea class="form-control" placeholder="Ваш комментарий..."></textarea>
+                <a href="/" class="btn btn-primary mt-2">Отправить</a>
+                <button type="button" class="btn btn-secondary mt-2" data-bs-toggle="modal" data-bs-target="#changeStatus">Завершить задачу</button>
+            </div>
+        </div>
+        <div>
+            <div class="list-group small">
+                <button type="button" class="list-group-item list-group-item-success list-group-item-action" data-bs-toggle="modal" data-bs-target="#changeStatus">Статус: {{ ticket.status }}</button>
+                <button type="button" class="list-group-item list-group-item-info list-group-item-action" data-bs-toggle="modal" data-bs-target="#changePriority">Приоритет: {{ ticket.priority }}</button>
+                <button type="button" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#changeAssignee">Ответственный: @{{ ticket.assignee_username }}</button>
+                <button type="button" class="list-group-item list-group-item-success list-group-item-action" data-bs-toggle="modal" data-bs-target="#changeDiscussion">Дискуссия: {{ ticket.discussion_closed }}</button>
+            </div>
+        </div>
+    </main>
+    <div class="modal fade" id="changeStatus" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Завершение заявки</h1>
+                </div>
+                <div class="modal-body">
+                    <p>Вы действительно хотите завершить данную заявку? Её возможно открыть позже.</p>
+                </div>
+                <div class="modal-footer">
+                    <a href="/" class="btn btn-danger">Да</a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="changeDiscussion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Закрытие дискуссии</h1>
+                </div>
+                <div class="modal-body">
+                    <p>Вы действительно хотите завершить дискуссию данной заявки? Её возможно открыть позже.</p>
+                </div>
+                <div class="modal-footer">
+                    <a href="/" class="btn btn-danger">Да</a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="changePriority" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Изменение приоритета</h1>
+                </div>
+                <div class="modal-body">
+                    <label for="priority" class="form-label">Приоритет</label>
+                    <select name="priority" id="priority" class="form-select">
+                        <option value="0" selected>Низкий</option>
+                        <option value="1">Средний</option>
+                        <option value="2">Высокий</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <a href="/" class="btn btn-primary">Изменить</a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="changeAssignee" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Изменение ответственного</h1>
+                </div>
+                <div class="modal-body">
+                    <label for="user" class="form-label">Ответственный</label>
+                    <select name="user" id="user" class="form-select">
+                        <option value="0" selected>-</option>
+                        <option value="1">-</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <a href="/" class="btn btn-primary">Изменить</a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash
 
 from helpdesk.db import db
 from helpdesk.models import User
-from helpdesk.blueprints import misc, auth
+from helpdesk.blueprints import auth, clients, tickets, misc, users
 
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
@@ -15,7 +15,10 @@ def create_app():
     )
 
     app.register_blueprint(auth.bp)
+    app.register_blueprint(clients.bp)
+    app.register_blueprint(tickets.bp)
     app.register_blueprint(misc.bp)
+    app.register_blueprint(users.bp)
 
     db.init_app(app)
 

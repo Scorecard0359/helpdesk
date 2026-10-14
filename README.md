@@ -1,6 +1,12 @@
 # Корпорпативный Helpdesk
 
-Довольно WIP!!!
+![](docs/1.png)
+
+![](docs/2.png)
+
+![](docs/3.png)
+
+![](docs/4.png)
 
 ## Развертывание
 
@@ -19,7 +25,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 uv sync
 ```
 
-3. Запуск (команда может поменяться в будущем)
+3. Запуск
 
 ```bash
 uv run flask --app helpdesk run
