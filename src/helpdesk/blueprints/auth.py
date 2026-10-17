@@ -2,6 +2,7 @@ import functools
 
 from flask import Blueprint, current_app, g, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
+from sqlalchemy import exc
 
 from helpdesk.db import db
 from helpdesk.models import User, InviteCode
@@ -76,10 +77,12 @@ def register():
                     )
                     db.session.add(user)
                     db.session.commit()
-                except db.IntegrityError:
+                except exc.IntegrityError:
                     error = f"Пользователь {username} уже существует."
                 else:
-                    return redirect(url_for("auth.login"))
+                    session.clear()
+                    session['user_id'] = user.id
+                    return redirect(url_for('misc.index'))
 
     return render_template('auth/register.html', error=error)
 

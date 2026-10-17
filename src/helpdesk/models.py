@@ -14,7 +14,7 @@ class User(db.Model):
     status: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
     registered_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
-    invite_code: Mapped[str] = mapped_column(String(16), ForeignKey("invite_codes.code"), unique=True, nullable=True)
+    invite_code: Mapped[str] = mapped_column(String(16), ForeignKey("invite_codes.code"), nullable=True)
 
 class Ticket(db.Model):
     __tablename__ = "tickets"
