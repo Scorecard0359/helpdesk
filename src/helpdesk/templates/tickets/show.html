@@ -6,7 +6,7 @@
             <h2 class="fw-normal mb-3">{% block title %}{{ ticket.title }}{% endblock %}</h2>
             <div class="card">
                 <div class="card-header">
-                    <b>{{ ticket.client.name }}</b> отправили заявку {{ ticket.created_at }}
+                    <b>{{ ticket.client.name }}</b> отправили заявку {{ ticket.created_at|format_date }}
                 </div>
                 <div class="card-body">
                     <p class="card-text">
@@ -14,26 +14,36 @@
                     </p>
                 </div>
             </div>
-            {% for comment in comments %}
-                <div class="timeline-box">
-                    <div class="timeline-line"></div>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <b>@{{ comment.user.username }}</b> * {{ comment.created_at }}
+            {% if comments %}
+                {% for comment in comments %}
+                    <div class="timeline-box">
+                        <div class="timeline-line"></div>
                     </div>
-                    <div class="card-body">
-                        <p class="card-text">
-                            {{ comment.body }}
-                        </p>
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between">
+                            <div>
+                                <b>@{{ comment.author.username }}</b>{% if comment.author.full_name %} <span class="text-muted">({{ comment.author.full_name }})</span>{% endif %} * {{ comment.created_at|format_date }}
+                            </div>
+                            {% if g.user.is_admin == 1 %}
+                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#hideComment" data-bs-cid="{{ comment.id }}"><span class="btn-close btn-close-white"></span></button>
+                            {% endif %}
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                {{ comment.body }}
+                            </p>
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            {% endif %}
             {% if not ticket.discussion_closed %}
-                <div class="mt-5">
-                    <textarea class="form-control" placeholder="Ваш комментарий..."></textarea>
-                    <a href="/" class="btn btn-primary mt-2">Отправить</a>
-                    <button type="button" class="btn btn-secondary mt-2" data-bs-toggle="modal" data-bs-target="#changeStatus">{% if ticket.status == 0 %}Завершить{% elif ticket.status == 1 %}Переоткрыть{% endif %} задачу</button>
+                <div class="my-5">
+                    <form action="{{ url_for("tickets.add_comment") }}" method="post">
+                        <input type="hidden" name="id" value="{{ ticket.id }}">
+                        <textarea class="form-control" placeholder="Ваш комментарий..." name="comment"></textarea>
+                        <input type="submit" class="btn btn-primary mt-2" value="Отправить">
+                        <button type="button" class="btn btn-secondary mt-2" data-bs-toggle="modal" data-bs-target="#changeStatus">{% if ticket.status == 0 %}Завершить{% elif ticket.status == 1 %}Переоткрыть{% endif %} задачу</button>
+                    </form>
                 </div>
             {% endif %}
         </div>
@@ -79,6 +89,36 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="hideComment" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Скрытие комментария</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Вы действительно хотите скрыть данный комментарий?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#" class="btn btn-danger hide-comment-btn">Да</a>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            const hideComment = document.getElementById('hideComment')
+            if(hideComment) {
+                hideComment.addEventListener('show.bs.modal', event => {
+                    const button = event.relatedTarget
+                    const comment = button.getAttribute('data-bs-cid')
+
+                    const modalButton = hideComment.querySelector('.hide-comment-btn')
+
+                    modalButton.href = `hide_comment/${comment}`
+                })
+            }
+        </script>
     {% endif %}
     <div class="modal fade" id="changePriority" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
         <div class="modal-dialog">

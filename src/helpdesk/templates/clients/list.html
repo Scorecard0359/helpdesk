@@ -35,54 +35,56 @@
             {% endif %}
         </div>
     </main>
-    <div class="modal fade" id="addClient" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form action="{{ url_for('clients.add') }}" method="post">
+    {% if g.user.is_admin == 1 %}
+        <div class="modal fade" id="addClient" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="{{ url_for('clients.add') }}" method="post">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5">Добавление нового клиента</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <label for="client-name">Имя клиента</label>
+                            <input type="text" class="form-control" id="client-name" name="client-name" required>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="submit" value="Создать" class="btn btn-primary">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="deleteClient" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5">Добавление нового клиента</h1>
+                        <h1 class="modal-title fs-5">Удаление клиента</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <label for="client-name">Имя клиента</label>
-                        <input type="text" class="form-control" id="client-name" name="client-name" required>
+                        <p>Вы действительно хотите удалить данного клиента?</p>
                     </div>
                     <div class="modal-footer">
-                        <input type="submit" value="Создать" class="btn btn-primary">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <a href="#" class="btn btn-danger delete-client-btn">Да</a>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
                     </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="deleteClient" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5">Удаление клиента</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Вы действительно хотите удалить данного клиента?</p>
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-danger delete-client-btn">Да</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
                 </div>
             </div>
         </div>
-    </div>
-    <script>
-        const deleteClient = document.getElementById('deleteClient')
-        if(deleteClient) {
-            deleteClient.addEventListener('show.bs.modal', event => {
-                const button = event.relatedTarget
-                const client = button.getAttribute('data-bs-clid')
+        <script>
+            const deleteClient = document.getElementById('deleteClient')
+            if(deleteClient) {
+                deleteClient.addEventListener('show.bs.modal', event => {
+                    const button = event.relatedTarget
+                    const client = button.getAttribute('data-bs-clid')
 
-                const modalButton = deleteClient.querySelector('.delete-client-btn')
+                    const modalButton = deleteClient.querySelector('.delete-client-btn')
 
-                modalButton.href = `delete/${client}`
-            })
-        }
-    </script>
+                    modalButton.href = `delete/${client}`
+                })
+            }
+        </script>
+    {% endif %}
 {% endblock %}

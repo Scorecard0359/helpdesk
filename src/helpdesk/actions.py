@@ -1,7 +1,7 @@
 from sqlalchemy import exc
 
 from helpdesk.db import db
-from helpdesk.models import User, Client, Ticket
+from helpdesk.models import User, Client, Ticket, TicketComment
 
 def get_users():
     result = db.session.execute(
@@ -74,6 +74,37 @@ def add_ticket(assignee_id, client_id, title, body, sent_via):
     db.session.commit()
 
     return ticket.id
+
+def add_ticket_comment(author_id, ticket_id, body):
+    comment = TicketComment(
+        author_id=author_id,
+        ticket_id=ticket_id,
+        body=body
+    )
+    db.session.add(comment)
+    db.session.commit()
+
+    return ticket_id
+
+def get_ticket_comments(id):
+    result = db.session.execute(
+        db.select(TicketComment).where(TicketComment.ticket_id == id, TicketComment.hidden == 0).options(db.joinedload(TicketComment.author))
+    ).scalars().all()
+
+    return result
+
+def get_ticket_comment(id):
+    result = db.session.execute(
+        db.select(TicketComment).where(TicketComment.id == id).options(db.joinedload(TicketComment.author))
+    ).scalar_one_or_none()
+
+    return result
+
+def ticket_hide_comment(id):
+    db.session.execute(
+        db.update(TicketComment).values(hidden=1).where(TicketComment.id == id)
+    )
+    db.session.commit()
 
 def ticket_change_status(id):
     status = get_ticket(id).status

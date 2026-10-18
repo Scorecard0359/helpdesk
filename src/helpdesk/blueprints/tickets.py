@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template, redirect, url_for, request
+from flask import Blueprint, render_template, redirect, url_for, request, g
 
 from helpdesk.blueprints.auth import login_required, admin_required
-from helpdesk.actions import get_clients, get_users, get_tickets, add_ticket, get_ticket, get_user, get_client, ticket_change_status, ticket_change_assignee, ticket_change_discussion, ticket_change_priority
+from helpdesk.actions import get_clients, get_users, get_tickets, add_ticket, add_ticket_comment, get_ticket, get_ticket_comments, get_ticket_comment, ticket_hide_comment, get_user, get_client, ticket_change_status, ticket_change_assignee, ticket_change_discussion, ticket_change_priority
 
 bp = Blueprint("tickets", __name__, static_folder='static', url_prefix='/tickets')
 
@@ -17,8 +17,36 @@ def list():
 def show(id):
     ticket = get_ticket(id)
     users = get_users()
+    comments = get_ticket_comments(id)
 
-    return render_template('tickets/show.html', ticket=ticket, users=users)
+    return render_template('tickets/show.html', ticket=ticket, users=users, comments=comments)
+
+@bp.route("/add_comment", methods=('GET', 'POST'))
+@login_required
+def add_comment():
+    if request.method == 'POST':
+        author_id = g.user.id
+        ticket_id = int(request.form['id'])
+        body = request.form['comment'].strip()
+
+        add_ticket_comment(author_id, ticket_id, body)
+
+        return redirect(url_for("tickets.show", id=ticket_id))
+
+    return redirect(url_for("tickets.list"))
+
+@bp.route("/hide_comment/<int:id>")
+@login_required
+@admin_required
+def hide_comment(id):
+    comment = get_ticket_comment(id)
+
+    if comment:
+        ticket_hide_comment(id)
+
+        return redirect(url_for("tickets.show", id=comment.ticket_id))
+
+    return redirect(url_for("tickets.list"))
 
 @bp.route("/add", methods=('GET', 'POST'))
 @login_required

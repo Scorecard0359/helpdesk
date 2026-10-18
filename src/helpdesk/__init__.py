@@ -1,6 +1,7 @@
-import click
 from flask import Flask
 from werkzeug.security import generate_password_hash
+from babel.dates import format_datetime, format_timedelta
+import click, datetime
 
 from helpdesk.db import db
 from helpdesk.models import User
@@ -46,5 +47,21 @@ def create_app():
                 print(f"Пользователь {username} был создан.")
             else:
                 print(f"Суперпользователь {username} был создан.")
+    
+    @app.template_filter()
+    def format_date(value):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=datetime.timezone.utc)
+
+        value_utc = value.astimezone(datetime.timezone.utc)
+        now_utc = datetime.datetime.now(datetime.timezone.utc)
+        dif = now_utc - value_utc
+
+        if dif < datetime.timedelta(minutes=1):
+            return "только что"
+        elif dif < datetime.timedelta(days=7):
+            return format_timedelta(dif, locale="ru_RU") + " назад"
+
+        return format_datetime(value, "d MMMM y 'в' HH:mm", locale="ru_RU")
 
     return app
