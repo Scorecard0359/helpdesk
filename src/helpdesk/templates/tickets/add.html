@@ -6,6 +6,11 @@
     <main class="w-100">
         <div class="container m-auto">
             <h3 class="fw-normal my-3">Новая заявка</h3>
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endif %}
             <form method="post">
                 <div class="mb-3">
                     <label for="title" class="form-label">Название</label>
@@ -14,7 +19,7 @@
                 <div class="mb-3">
                     <label for="client" class="form-label">Клиент</label>
                     <select name="client" id="client" class="form-select">
-                        <option selected>-</option>
+                        <option value="0" selected>-</option>
                         {% for client in clients %}
                             <option value="{{ client.id }}">{{ client.name }}</option>
                         {% endfor %}

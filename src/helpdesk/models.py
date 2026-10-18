@@ -28,8 +28,8 @@ class Ticket(db.Model):
     sent_via: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     title: Mapped[str] = mapped_column(String(100), nullable=False)
     body: Mapped[str] = mapped_column(String(1000), nullable=True)
-    status: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    priority: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    status: Mapped[bool] = mapped_column(Boolean, default=False)
+    priority: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     discussion_closed: Mapped[bool] = mapped_column(Boolean, default=False)
 
 class TicketComment(db.Model):

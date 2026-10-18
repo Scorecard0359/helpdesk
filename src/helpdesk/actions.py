@@ -13,7 +13,7 @@ def get_users():
 def get_user(id):
     result = db.session.execute(
         db.select(User).where(User.id == id)
-    ).scalar_one()
+    ).scalar_one_or_none()
 
     return result
 
@@ -27,14 +27,14 @@ def get_clients():
 def get_client(id):
     result = db.session.execute(
         db.select(Client).where(Client.id == id)
-    ).scalar_one()
+    ).scalar_one_or_none()
 
     return result
 
 def get_ticket(id):
     result = db.session.execute(
         db.select(Ticket).where(Ticket.id == id).options(db.joinedload(Ticket.assignee)).options(db.joinedload(Ticket.client))
-    ).scalar_one()
+    ).scalar_one_or_none()
 
     return result
 
@@ -74,3 +74,35 @@ def add_ticket(assignee_id, client_id, title, body, sent_via):
     db.session.commit()
 
     return ticket.id
+
+def ticket_change_status(id):
+    status = get_ticket(id).status
+
+    status = not status
+
+    db.session.execute(
+        db.update(Ticket).values(status=status).where(Ticket.id == id)
+    )
+    db.session.commit()
+    
+def ticket_change_priority(id, priority):
+    db.session.execute(
+        db.update(Ticket).values(priority=priority).where(Ticket.id == id)
+    )
+    db.session.commit()
+
+def ticket_change_assignee(id, assignee):
+    db.session.execute(
+        db.update(Ticket).values(assignee_id=assignee).where(Ticket.id == id)
+    )
+    db.session.commit()
+
+def ticket_change_discussion(id):
+    discussion = get_ticket(id).discussion_closed
+
+    discussion = not discussion
+
+    db.session.execute(
+        db.update(Ticket).values(discussion_closed=discussion).where(Ticket.id == id)
+    )
+    db.session.commit()

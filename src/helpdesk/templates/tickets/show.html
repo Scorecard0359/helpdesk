@@ -29,16 +29,18 @@
                     </div>
                 </div>
             {% endfor %}
-            <div class="mt-5">
-                <textarea class="form-control" placeholder="Ваш комментарий..."></textarea>
-                <a href="/" class="btn btn-primary mt-2">Отправить</a>
-                <button type="button" class="btn btn-secondary mt-2" data-bs-toggle="modal" data-bs-target="#changeStatus">Завершить задачу</button>
-            </div>
+            {% if not ticket.discussion_closed %}
+                <div class="mt-5">
+                    <textarea class="form-control" placeholder="Ваш комментарий..."></textarea>
+                    <a href="/" class="btn btn-primary mt-2">Отправить</a>
+                    <button type="button" class="btn btn-secondary mt-2" data-bs-toggle="modal" data-bs-target="#changeStatus">{% if ticket.status == 0 %}Завершить{% elif ticket.status == 1 %}Переоткрыть{% endif %} задачу</button>
+                </div>
+            {% endif %}
         </div>
         <div>
             <div class="list-group small">
-                <button type="button" class="list-group-item list-group-item-{% if ticket.status == 0 %}info{% elif ticket.status == 1 %}success{% endif %} list-group-item-action" data-bs-toggle="modal" data-bs-target="#changeStatus">Статус: {% if ticket.status == 0 %}открыто{% elif ticket.status == 1 %}решено{% endif %}</button>
-                <button type="button" class="list-group-item list-group-item-info list-group-item-action" data-bs-toggle="modal" data-bs-target="#changePriority">Приоритет: {% if ticket.priority == 0 %}низкий{% elif ticket.priority == 1 %}средний{% elif ticket.priority == 2 %}высокий{% endif %}</button>
+                <button type="button" class="list-group-item list-group-item-{% if not ticket.status %}info{% else %}success{% endif %} list-group-item-action" data-bs-toggle="modal" data-bs-target="#changeStatus">Статус: {% if not ticket.status %}открыто{% else %}решено{% endif %}</button>
+                <button type="button" class="list-group-item list-group-item-info list-group-item-action" data-bs-toggle="modal" data-bs-target="#changePriority">Приоритет: {% if ticket.priority == 1 %}низкий{% elif ticket.priority == 2 %}средний{% elif ticket.priority == 3 %}высокий{% endif %}</button>
                 <button type="button" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#changeAssignee">Ответственный: @{{ ticket.assignee.username }}</button>
                 <button type="button" class="list-group-item list-group-item-{% if ticket.discussion_closed %}danger{% else %}success{% endif %} list-group-item-action" data-bs-toggle="modal" data-bs-target="#changeDiscussion">Дискуссия: {% if ticket.discussion_closed %}закрыта{% else %}открыта{% endif %}</button>
             </div>
@@ -48,13 +50,13 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5">Завершение заявки</h1>
+                    <h1 class="modal-title fs-5">{% if not ticket.status %}Завершение{% else %}Повторное открытие{% endif %} заявки</h1>
                 </div>
                 <div class="modal-body">
-                    <p>Вы действительно хотите завершить данную заявку? Её возможно открыть позже.</p>
+                    <p>Вы действительно хотите {% if not ticket.status %}завершить{% else %}переоткрыть{% endif %} данную заявку? Заявку можно будет {% if not ticket.status %}открыть{% else %}завершить{% endif %} позже.</p>
                 </div>
                 <div class="modal-footer">
-                    <a href="/" class="btn btn-danger">Да</a>
+                    <a href="chstatus/{{ ticket.id }}" class="btn btn-danger">Да</a>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
                 </div>
             </div>
@@ -64,13 +66,13 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5">Закрытие дискуссии</h1>
+                    <h1 class="modal-title fs-5">{% if ticket.discussion_closed %}Открытие{% else %}Закрытие{% endif %} дискуссии</h1>
                 </div>
                 <div class="modal-body">
-                    <p>Вы действительно хотите завершить дискуссию данной заявки? Её возможно открыть позже.</p>
+                    <p>Вы действительно хотите {% if ticket.discussion_closed %}открыть{% else %}завершить{% endif %} дискуссию данной заявки? Дискуссию можно будет {% if ticket.discussion_closed %}закрыть{% else %}открыть{% endif %} позже.</p>
                 </div>
                 <div class="modal-footer">
-                    <a href="/" class="btn btn-danger">Да</a>
+                    <a href="chdiscussion/{{ ticket.id }}" class="btn btn-danger">Да</a>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
                 </div>
             </div>
@@ -79,41 +81,48 @@
     <div class="modal fade" id="changePriority" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5">Изменение приоритета</h1>
-                </div>
-                <div class="modal-body">
-                    <label for="priority" class="form-label">Приоритет</label>
-                    <select name="priority" id="priority" class="form-select">
-                        <option value="0" selected>Низкий</option>
-                        <option value="1">Средний</option>
-                        <option value="2">Высокий</option>
-                    </select>
-                </div>
-                <div class="modal-footer">
-                    <a href="/" class="btn btn-primary">Изменить</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                </div>
+                <form action="{{ url_for('tickets.change_priority') }}" method="post">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Изменение приоритета</h1>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="id" value="{{ ticket.id }}">
+                        <label for="priority" class="form-label">Приоритет</label>
+                        <select name="priority" id="priority" class="form-select">
+                            <option value="1"{% if ticket.priority == 1 %} selected {% endif %}>Низкий</option>
+                            <option value="2"{% if ticket.priority == 2 %} selected {% endif %}>Средний</option>
+                            <option value="3"{% if ticket.priority == 3 %} selected {% endif %}>Высокий</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-primary" value="Изменить">`
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
     <div class="modal fade" id="changeAssignee" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5">Изменение ответственного</h1>
-                </div>
-                <div class="modal-body">
-                    <label for="user" class="form-label">Ответственный</label>
-                    <select name="user" id="user" class="form-select">
-                        <option value="0" selected>-</option>
-                        <option value="1">-</option>
-                    </select>
-                </div>
-                <div class="modal-footer">
-                    <a href="/" class="btn btn-primary">Изменить</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                </div>
+                <form action="{{ url_for('tickets.change_assignee') }}" method="post">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Изменение ответственного</h1>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="id" value="{{ ticket.id }}">
+                        <label for="user" class="form-label">Ответственный</label>
+                        <select name="user" id="user" class="form-select">
+                            {% for user in users %}
+                                <option value="{{ user.id }}"{% if ticket.assignee_id == user.id %} selected{% endif %}>@{{ user.username }}{% if user.full_name %} ({{ user.full_name }}){% endif %}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-primary" value="Изменить">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

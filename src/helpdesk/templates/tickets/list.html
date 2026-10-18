@@ -25,9 +25,9 @@
                     <tr>
                         <td scope="row">{{ ticket.id }}</td>
                         <td><a href="{{ url_for('tickets.show', id=ticket.id) }}">{{ ticket.title }}</a></td>
-                        <td><b>@{{ ticket.assignee.username }}</b>{% if ticket.assignee.full_name %} <span class="text-muted">({{ticket.assignee.full_name}})</span>{% endif %}</td>
+                        <td>@{{ ticket.assignee.username }}{% if ticket.assignee.full_name %} <span class="text-muted">({{ticket.assignee.full_name}})</span>{% endif %}</td>
                         <td>{{ ticket.client.name }}</td>
-                        <td>{% if ticket.priority == 0 %}Низкий{% elif ticket.priority == 1 %}Средний{% elif ticket.priority == 2 %}Высокий{% endif %}</td>
+                        <td>{% if ticket.priority == 1 %}Низкий{% elif ticket.priority == 2 %}Средний{% elif ticket.priority == 3 %}Высокий{% endif %}</td>
                         <td>{% if ticket.sent_via == 0 %}Неопределено{% elif ticket.sent_via == 1 %}Диспетчер{% elif ticket.sent_via == 2 %}Электронная почта{% elif ticket.sent_via == 3 %}Мобильный контакт{% elif ticket.sent_via == 4 %}Telegram{% endif %}</td>
                         <td>{% if ticket.status == 0 %}Открыто{% elif ticket.status == 1 %}Решено{% endif %}</td>
                     </tr>
