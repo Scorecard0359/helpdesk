@@ -7,11 +7,6 @@ bp = Blueprint("tickets", __name__, static_folder='static', url_prefix='/tickets
 
 @bp.route("/")
 @login_required
-def index():    
-    return redirect(url_for("tickets.list"))
-
-@bp.route("/list")
-@login_required
 def list():
     tickets = get_tickets()
 
@@ -37,8 +32,8 @@ def add():
         body = request.form['body'].strip()
         publish_method = request.form['publish_method']
 
-        add_ticket(assignee, client, title, body, publish_method)
+        ticket = add_ticket(assignee, client, title, body, publish_method)
 
-        return redirect(url_for('tickets.list'))
+        return redirect(url_for('tickets.show', id=ticket))
 
     return render_template('tickets/add.html', clients=clients, users=users)

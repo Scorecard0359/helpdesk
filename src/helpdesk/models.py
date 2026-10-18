@@ -2,7 +2,7 @@ from datetime import datetime
 
 from helpdesk.db import db
 from sqlalchemy import Integer, String, ForeignKey, DateTime, Boolean, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 class User(db.Model):
     __tablename__ = "users"
@@ -21,7 +21,9 @@ class Ticket(db.Model):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     assignee_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
+    assignee: Mapped["User"] = relationship()
     client_id: Mapped[int] = mapped_column(Integer, ForeignKey("clients.id"), nullable=False)
+    client: Mapped["Client"] = relationship()
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
     sent_via: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     title: Mapped[str] = mapped_column(String(100), nullable=False)
@@ -35,6 +37,7 @@ class TicketComment(db.Model):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     author_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
+    author: Mapped["User"] = relationship()
     ticket_id: Mapped[int] = mapped_column(Integer, ForeignKey("tickets.id"), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
     body: Mapped[str] = mapped_column(String(1000), nullable=False)

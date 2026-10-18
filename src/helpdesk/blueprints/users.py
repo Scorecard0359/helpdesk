@@ -7,11 +7,6 @@ bp = Blueprint("users", __name__, static_folder='static', url_prefix='/users')
 
 @bp.route("/")
 @login_required
-def index():
-    return redirect(url_for("users.list"))
-
-@bp.route("/list")
-@login_required
 def list():
     users = get_users()
 

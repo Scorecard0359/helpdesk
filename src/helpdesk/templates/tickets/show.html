@@ -6,7 +6,7 @@
             <h2 class="fw-normal mb-3">{% block title %}{{ ticket.title }}{% endblock %}</h2>
             <div class="card">
                 <div class="card-header">
-                    <b>{{ ticket.client_name }}</b> отправили заявку {{ ticket.created_at }}
+                    <b>{{ ticket.client.name }}</b> отправили заявку {{ ticket.created_at }}
                 </div>
                 <div class="card-body">
                     <p class="card-text">
@@ -20,7 +20,7 @@
                 </div>
                 <div class="card">
                     <div class="card-header">
-                        <b>@{{ comment.username }}</b> * {{ comment.create_at }}
+                        <b>@{{ comment.user.username }}</b> * {{ comment.created_at }}
                     </div>
                     <div class="card-body">
                         <p class="card-text">
@@ -37,10 +37,10 @@
         </div>
         <div>
             <div class="list-group small">
-                <button type="button" class="list-group-item list-group-item-success list-group-item-action" data-bs-toggle="modal" data-bs-target="#changeStatus">Статус: {{ ticket.status }}</button>
-                <button type="button" class="list-group-item list-group-item-info list-group-item-action" data-bs-toggle="modal" data-bs-target="#changePriority">Приоритет: {{ ticket.priority }}</button>
-                <button type="button" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#changeAssignee">Ответственный: @{{ ticket.assignee_username }}</button>
-                <button type="button" class="list-group-item list-group-item-success list-group-item-action" data-bs-toggle="modal" data-bs-target="#changeDiscussion">Дискуссия: {{ ticket.discussion_closed }}</button>
+                <button type="button" class="list-group-item list-group-item-{% if ticket.status == 0 %}info{% elif ticket.status == 1 %}success{% endif %} list-group-item-action" data-bs-toggle="modal" data-bs-target="#changeStatus">Статус: {% if ticket.status == 0 %}открыто{% elif ticket.status == 1 %}решено{% endif %}</button>
+                <button type="button" class="list-group-item list-group-item-info list-group-item-action" data-bs-toggle="modal" data-bs-target="#changePriority">Приоритет: {% if ticket.priority == 0 %}низкий{% elif ticket.priority == 1 %}средний{% elif ticket.priority == 2 %}высокий{% endif %}</button>
+                <button type="button" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#changeAssignee">Ответственный: @{{ ticket.assignee.username }}</button>
+                <button type="button" class="list-group-item list-group-item-{% if ticket.discussion_closed %}danger{% else %}success{% endif %} list-group-item-action" data-bs-toggle="modal" data-bs-target="#changeDiscussion">Дискуссия: {% if ticket.discussion_closed %}закрыта{% else %}открыта{% endif %}</button>
             </div>
         </div>
     </main>

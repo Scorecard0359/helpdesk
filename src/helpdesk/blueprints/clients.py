@@ -8,11 +8,6 @@ bp = Blueprint("clients", __name__, static_folder='static', url_prefix='/clients
 
 @bp.route("/")
 @login_required
-def index():
-    return redirect(url_for("clients.list"))
-
-@bp.route("/list")
-@login_required
 def list():
     error = request.args.get('error')
     clients = get_clients()

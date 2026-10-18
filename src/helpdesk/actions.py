@@ -33,14 +33,14 @@ def get_client(id):
 
 def get_ticket(id):
     result = db.session.execute(
-        db.select(Ticket).where(Ticket.id == id)
+        db.select(Ticket).where(Ticket.id == id).options(db.joinedload(Ticket.assignee)).options(db.joinedload(Ticket.client))
     ).scalar_one()
 
     return result
 
 def get_tickets():
     result = db.session.execute(
-        db.select(Ticket, User.username).join(User, Ticket.assignee_id == User.id).order_by(Ticket.created_at.desc())
+        db.select(Ticket).options(db.joinedload(Ticket.assignee)).options(db.joinedload(Ticket.client)).order_by(Ticket.created_at.desc())
     ).scalars().all()
 
     return result
@@ -72,3 +72,5 @@ def add_ticket(assignee_id, client_id, title, body, sent_via):
     )
     db.session.add(ticket)
     db.session.commit()
+
+    return ticket.id
