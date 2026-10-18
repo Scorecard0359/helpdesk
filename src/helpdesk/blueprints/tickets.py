@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request
 
-from helpdesk.blueprints.auth import login_required
+from helpdesk.blueprints.auth import login_required, admin_required
 from helpdesk.actions import get_clients, get_users, get_tickets, add_ticket, get_ticket, get_user, get_client, ticket_change_status, ticket_change_assignee, ticket_change_discussion, ticket_change_priority
 
 bp = Blueprint("tickets", __name__, static_folder='static', url_prefix='/tickets')
@@ -99,6 +99,7 @@ def change_priority():
 
 @bp.route("/chdiscussion/<int:id>")
 @login_required
+@admin_required
 def change_discussion(id):
     ticket = get_ticket(id)
 

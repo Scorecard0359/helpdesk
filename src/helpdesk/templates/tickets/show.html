@@ -62,22 +62,24 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="changeDiscussion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5">{% if ticket.discussion_closed %}Открытие{% else %}Закрытие{% endif %} дискуссии</h1>
-                </div>
-                <div class="modal-body">
-                    <p>Вы действительно хотите {% if ticket.discussion_closed %}открыть{% else %}завершить{% endif %} дискуссию данной заявки? Дискуссию можно будет {% if ticket.discussion_closed %}закрыть{% else %}открыть{% endif %} позже.</p>
-                </div>
-                <div class="modal-footer">
-                    <a href="chdiscussion/{{ ticket.id }}" class="btn btn-danger">Да</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
+    {% if g.user.is_admin == 1 %}
+        <div class="modal fade" id="changeDiscussion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">{% if ticket.discussion_closed %}Открытие{% else %}Закрытие{% endif %} дискуссии</h1>
+                    </div>
+                    <div class="modal-body">
+                        <p>Вы действительно хотите {% if ticket.discussion_closed %}открыть{% else %}завершить{% endif %} дискуссию данной заявки? Дискуссию можно будет {% if ticket.discussion_closed %}закрыть{% else %}открыть{% endif %} позже.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="chdiscussion/{{ ticket.id }}" class="btn btn-danger">Да</a>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    {% endif %}
     <div class="modal fade" id="changePriority" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
