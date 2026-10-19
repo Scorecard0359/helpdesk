@@ -9,9 +9,11 @@
                     <b>{{ ticket.client.name }}</b> отправили заявку {{ ticket.created_at|format_date }}
                 </div>
                 <div class="card-body">
-                    <p class="card-text">
-                        {{ ticket.body }}
-                    </p>
+                    <div class="card-text">
+                        {% for p in body %}
+                            <p>{{ p }}</p>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
             {% if comments %}

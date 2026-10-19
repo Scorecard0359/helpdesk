@@ -89,11 +89,11 @@ async def main():
 
     @dp.message(TicketStates.body)
     async def process_body(message: Message, state: FSMContext):
-        if len(message.text.strip()) < 100:
+        if len(message.text) < 100:
             await message.answer("Текст имеет меньше 100 символов.")
             return
 
-        await state.update_data(body=message.text.strip())
+        await state.update_data(body=message.text)
 
         data = await state.get_data()
 

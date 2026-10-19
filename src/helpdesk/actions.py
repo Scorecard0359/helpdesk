@@ -1,7 +1,8 @@
+from os import urandom
 from sqlalchemy import exc
 
 from helpdesk.db import db
-from helpdesk.models import User, Client, Ticket, TicketComment
+from helpdesk.models import User, Client, Ticket, TicketComment, InviteCode
 
 def get_users():
     result = db.session.execute(
@@ -44,6 +45,27 @@ def get_tickets():
     ).scalars().all()
 
     return result
+
+def get_invite_codes():
+    result = db.session.execute(
+        db.select(InviteCode)
+    ).scalars().all()
+
+    return result
+
+def create_invite_code():
+    code = urandom(15).hex()[:16]
+    invite = InviteCode(
+        code=code
+    )
+    db.session.add(invite)
+    db.session.commit()
+
+def delete_invite_code(id):
+    db.session.execute(
+        db.delete(InviteCode).where(InviteCode.id == id)
+    )
+    db.session.commit()
 
 def add_client(name):
     try:

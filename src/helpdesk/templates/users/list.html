@@ -8,7 +8,7 @@
             <h3 class="fw-normal m-3 d-flex justify-content-between">
                 Сотрудники
                 {% if config['INVITE_ONLY'] %}
-                    <a href="/" class="btn btn-secondary btn-sm">Приглашения</a>
+                    <a href="{{ url_for('users.invite_list') }}" class="btn btn-secondary btn-sm">Приглашения</a>
                 {% endif %}
             </h3>
             <ul class="list-group m-3">

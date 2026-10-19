@@ -117,3 +117,13 @@ def admin_required(view):
         return view(**kwargs)
 
     return wrapped_view
+
+def invite_mode_enabled(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if not current_app.config['INVITE_ONLY']:
+            return redirect(url_for('misc.index'))
+
+        return view(**kwargs)
+
+    return wrapped_view

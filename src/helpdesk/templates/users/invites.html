@@ -1,0 +1,67 @@
+{% extends 'baseof.html' %}
+
+{% block title %}Коды приглашения{% endblock %}
+
+{% block content %}
+    <main class="w-100">
+        <div class="m-auto list-group-smaller">
+            <h3 class="fw-normal m-3 d-flex justify-content-between">
+                Коды приглашения
+                {% if g.user.is_admin == 1 %}
+                    <a href="{{ url_for("users.invite_create") }}" class="btn btn-sm btn-primary">Новый код</a>
+                {% endif %}
+            </h3>
+            {% if invites %}
+                <ul class="list-group m-3">
+                    {% for invite in invites %}
+                        <li class="list-group-item d-flex justify-content-between">
+                            <b>{{ invite.code }}</b>
+                            {% if g.user.is_admin == 1 %}
+                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteCode" data-bs-cid="{{ invite.id }}"><span class="btn-close btn-close-white"></span></button>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="alert alert-warning m-3" role="alert">
+                    Кодов приглашения не существует.
+                    {% if g.user.is_admin == 1 %}
+                        Вы можете добавить их нажав на кнопку выше.
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </main>
+    {% if g.user.is_admin == 1 %}
+        <div class="modal fade" id="deleteCode" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Удаление кода</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Вы действительно хотите удалить данный код?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#" class="btn btn-danger delete-code-btn">Да</a>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            const deleteCode = document.getElementById('deleteCode')
+            if(deleteCode) {
+                deleteCode.addEventListener('show.bs.modal', event => {
+                    const button = event.relatedTarget
+                    const code = button.getAttribute('data-bs-cid')
+
+                    const modalButton = deleteCode.querySelector('.delete-code-btn')
+
+                    modalButton.href = `invites/delete/${code}`
+                })
+            }
+        </script>
+    {% endif %}
+{% endblock %}

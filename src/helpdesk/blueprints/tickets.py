@@ -19,7 +19,9 @@ def show(id):
     users = get_users()
     comments = get_ticket_comments(id)
 
-    return render_template('tickets/show.html', ticket=ticket, users=users, comments=comments)
+    body = ticket.body.splitlines()
+
+    return render_template('tickets/show.html', ticket=ticket, users=users, comments=comments, body=body)
 
 @bp.route("/add_comment", methods=('GET', 'POST'))
 @login_required
@@ -59,7 +61,7 @@ def add():
         assignee = request.form['assignee']
         client = request.form['client']
         title = request.form['title'].strip()
-        body = request.form['body'].strip()
+        body = request.form['body']
         publish_method = request.form['publish_method']
 
         try:
